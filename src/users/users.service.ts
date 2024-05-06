@@ -25,18 +25,23 @@ export class UsersService {
     return formatUsersData(usersData)
   }
 
-  async getAllMatchingUsers(query: { limit: string, rol: string }) {
-    const { limit, rol } = query
-    let cond = {}
-    if (limit) cond = { ...cond, take: parseInt(limit) }
-    if (rol) cond = { ...cond, where: { 'userRolSettingsId': parseInt(rol) } }
+  async getAllMatchingUsers(query: { limit: string, rol: string, email: string }) {
+    const { limit, rol, email } = query
+    let filter = {}
+    if (limit) filter = { take: parseInt(limit) }
 
-    const usersData = await this.prisma.user.findMany(cond)
+    const whereClause = {}
+    if (rol) whereClause['userRolSettingsId'] = parseInt(rol)
+    if (email) whereClause['email'] = email
+
+    filter = { ...filter, where: whereClause }
+
+    const usersData = await this.prisma.user.findMany(filter)
     return formatUsersData(usersData)
   }
 
   async getUserById(id: string) {
-    const userFound = this.prisma.user.findFirst({
+    const userFound = await this.prisma.user.findFirst({
       where: {
         id: id
       }
@@ -48,7 +53,7 @@ export class UsersService {
   }
 
   async getUserByEmail(email: string) {
-    const userFound = this.prisma.user.findFirst({
+    const userFound = await this.prisma.user.findFirst({
       where: {
         email: email
       }

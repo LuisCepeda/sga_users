@@ -24,12 +24,6 @@ export class UsersController {
     }
   }
 
-  @Get(':email')
-  async getUserByEmail(@Param('email') email: string) {
-    return {
-      'Status': 'ok', 'Data': await this.usersService.getUserByEmail(email)
-    }
-  }
 
   @Post()
   async createUser(@Body() userData: CreateUserDto) {
