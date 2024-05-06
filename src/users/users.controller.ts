@@ -18,9 +18,16 @@ export class UsersController {
   }
 
   @Get(':id')
-  async getUser(@Param('id') id: string) {
+  async getUserById(@Param('id') id: string) {
     return {
       'Status': 'ok', 'Data': await this.usersService.getUserById(id)
+    }
+  }
+
+  @Get(':email')
+  async getUserByEmail(@Param('email') email: string) {
+    return {
+      'Status': 'ok', 'Data': await this.usersService.getUserByEmail(email)
     }
   }
 
