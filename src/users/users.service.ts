@@ -44,7 +44,7 @@ export class UsersService {
     if (!userFound) {
       return new NotFoundException(`User with id ${id} not found.`)
     }
-    return userFound
+    return formatUserData(userFound)
   }
 
   async getUserByEmail(email: string) {
@@ -56,7 +56,7 @@ export class UsersService {
     if (!userFound) {
       return new NotFoundException(`User with email ${email} not found.`)
     }
-    return userFound
+    return formatUserData(userFound)
   }
 
   async updateUserById(userId: string, updateUserData: any) {
