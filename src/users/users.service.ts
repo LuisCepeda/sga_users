@@ -2,18 +2,27 @@ import { Injectable, HttpCode, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma.service';
-
+import * as bcrypt from 'bcrypt'
+import { formatUserData, formatUsersData } from '../utils/users.js'
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) { }
+
+
 
   async createUser(userData: CreateUserDto) {
-    //TODO encode password
-    return await this.prisma.user.create({ data: userData })
+
+    const hashedPassword = await bcrypt.hash(userData.password, 15)
+    const newUserData = { ...userData, password: hashedPassword }
+    const newUser = await this.prisma.user.create({ data: newUserData })
+    return formatUserData(newUser)
   }
 
+
   async getAllUsers() {
-    return await this.prisma.user.findMany();
+    const usersData = await this.prisma.user.findMany();
+
+    return formatUsersData(usersData)
   }
 
   async getAllMatchingUsers(query: { limit: string, rol: string }) {
@@ -22,7 +31,8 @@ export class UsersService {
     if (limit) cond = { ...cond, take: parseInt(limit) }
     if (rol) cond = { ...cond, where: { 'userRolSettingsId': parseInt(rol) } }
 
-    return await this.prisma.user.findMany(cond)
+    const usersData = await this.prisma.user.findMany(cond)
+    return formatUsersData(usersData)
   }
 
   async getUserById(id: string) {
@@ -59,3 +69,5 @@ export class UsersService {
     return userRemoved
   }
 }
+
+
