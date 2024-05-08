@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt'
 import { formatUserData, formatUsersData } from '../utils/users.js'
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) { console.log('UserService PrismaService instance ID:', this.prisma.getInstanceId()); }
 
 
 
