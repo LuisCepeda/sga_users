@@ -2,11 +2,11 @@ import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { compare } from 'bcrypt'
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) { console.log('AuthService PrismaService instance ID:', this.prisma.getInstanceId()) }
+  constructor(private readonly prisma: PrismaService) { }
 
   async register(userObject: RegisterAuthDto) {
     return 'This action adds a new auth';
