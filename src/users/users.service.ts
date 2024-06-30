@@ -15,14 +15,15 @@ export class UsersService {
    // const hashedPassword = await bcrypt.hash(userData.password, 15)
    // const newUserData = { ...userData, password: hashedPassword }
     const newUser = await this.prisma.user.create({ data: userData })
-    return formatUserData(newUser)
+    
+    return newUser
   }
 
 
   async getAllUsers() {
     const usersData = await this.prisma.user.findMany();
 
-    return formatUsersData(usersData)
+    return usersData
   }
 
   async getAllMatchingUsers(query: { limit: string, rol: string, email: string }) {
@@ -37,7 +38,7 @@ export class UsersService {
     filter = { ...filter, where: whereClause }
 
     const usersData = await this.prisma.user.findMany(filter)
-    return formatUsersData(usersData)
+    return usersData
   }
 
   async getUserById(id: string) {
@@ -49,7 +50,7 @@ export class UsersService {
     if (!userFound) {
       return new NotFoundException(`User with id ${id} not found.`)
     }
-    return formatUserData(userFound)
+    return userFound
   }
 
   async getUserByEmail(email: string) {
@@ -61,7 +62,7 @@ export class UsersService {
     if (!userFound) {
       return new NotFoundException(`User with email ${email} not found.`)
     }
-    return formatUserData(userFound)
+    return userFound
   }
 
   async updateUserById(userId: string, updateUserData: any) {
