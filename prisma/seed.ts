@@ -54,26 +54,38 @@ const userSettingsInit = [
 ];
 
 async function main() {
-    // Crear roles de usuario
-    await prisma.user_roles.createMany({ data: userRolesInit });
+    // Verificar si los roles de usuario ya existen
+    const rolesCount = await prisma.user_roles.count();
+    if (rolesCount === 0) {
+        // Crear roles de usuario
+        await prisma.user_roles.createMany({ data: userRolesInit });
+    }
 
-    await prisma.user_settings.createMany({ data: userSettingsInit });
+    // Verificar si las configuraciones de usuario ya existen
+    const settingsCount = await prisma.user_settings.count();
+    if (settingsCount === 0) {
+        await prisma.user_settings.createMany({ data: userSettingsInit });
+    }
 
-    const hashedPassword = await bcrypt.hash("talentotech", 10);
-    // Crear usuario
-    await prisma.user.create({
-        data: {
-            firstname: "admin",
-            lastname: "admin",
-            username: "admin",
-            email: "admin@admin.com",
-            password: hashedPassword,
-            userSettingsId: 1,
-            userRolSettingsId: 1,
-            createdAt: new Date(),
-            updateAt: new Date(),
-        },
-    });
+    // Verificar si el usuario administrador ya existe
+    const userCount = await prisma.user.count();
+    if (userCount === 0) {
+        const hashedPassword = await bcrypt.hash("talentotech", 10);
+        // Crear usuario
+        await prisma.user.create({
+            data: {
+                firstname: "admin",
+                lastname: "admin",
+                username: "admin",
+                email: "admin@admin.com",
+                password: hashedPassword,
+                userSettingsId: 1,
+                userRolSettingsId: 1,
+                createdAt: new Date(),
+                updateAt: new Date(),
+            },
+        });
+    }
 }
 
 main()
